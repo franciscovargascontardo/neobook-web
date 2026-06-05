@@ -1,155 +1,121 @@
-# 🚀 Repaso de Express.js
+# ⬡ NeoBook Web
 
-Proyecto didáctico para repasar los conceptos fundamentales de Express.js:
-rutas, controladores, middlewares, `req.params`, `req.body` y `req.query`.
+**Un revival open source del clásico NeoBook — ahora en el navegador.**
+
+NeoBook fue un software de los años 90/2000 que permitía crear aplicaciones de escritorio usando comandos simples y una interfaz visual. Su empresa cerró y dejó de existir. Este proyecto lo revive como una app web moderna, sin instalación, gratis y open source.
+
+![NeoBook Web Screenshot](https://raw.githubusercontent.com/your-username/neobook-web/main/preview.png)
+
+## Demo
+
+🌐 **[Abrir NeoBook Web](https://franciscovargascontardo.github.io/neobook-web/)**
 
 ---
 
-## 📁 Estructura del proyecto
+## Características
+
+- **Constructor visual drag & drop** — arrastra componentes al canvas
+- **Motor de comandos NeoBook** — sintaxis familiar del original
+- **Editor de scripts** integrado con resaltado de comandos
+- **Consola de comandos** en tiempo real con historial
+- **Panel de propiedades** por objeto seleccionado
+- **Sistema de variables** con visor en vivo
+- **Vista previa** de la aplicación construida
+- **Exportar a HTML** — descarga tu app como archivo independiente
+- **Multi-página** — soporte para 3 páginas por proyecto
+
+## Componentes disponibles
+
+| Control     | Gráfico  |
+|-------------|----------|
+| Botón       | Rectángulo |
+| Campo texto | Círculo  |
+| Etiqueta    | Línea    |
+| Checkbox    | Imagen   |
+| Lista (select) |       |
+| Área de texto |       |
+
+## Comandos NeoBook Web
 
 ```
-expressjs-repaso/
-├── src/
-│   ├── app.js                          # Punto de entrada: configura Express y monta rutas
-│   ├── data/
-│   │   └── db.js                       # "Base de datos" en memoria (arrays)
-│   ├── routes/
-│   │   ├── usuarios.routes.js          # Define las rutas del recurso /usuarios
-│   │   └── productos.routes.js         # Define las rutas del recurso /productos
-│   └── controllers/
-│       ├── usuarios.controller.js      # Lógica de negocio de usuarios
-│       └── productos.controller.js     # Lógica de negocio de productos
-├── package.json
+GoPage <n>                      — Navegar a una página
+ShowMessage "mensaje"           — Mostrar un mensaje al usuario
+SetVariable nombre = "valor"    — Definir o modificar una variable
+Print [variable] o "texto"      — Imprimir en la consola
+GetInput prompt = "?" var = x   — Pedir input al usuario
+PlaySound beep|<hz>             — Reproducir un tono
+Loop <n> [ ... ]                — Repetir n veces
+IfThen [var] = "x" [ ... ]      — Condicional simple
+OpenURL "https://..."           — Abrir un enlace
+ClearConsole                    — Limpiar la consola
+ListVars                        — Listar todas las variables
+Help                            — Mostrar ayuda completa
+```
+
+### Ejemplo de script
+
+```
+OnPageLoad [
+  SetVariable saludo = "¡Bienvenido!"
+  Print [saludo]
+]
+
+OnButtonClick btn_1 [
+  GetInput prompt = "¿Tu nombre?" var = nombre
+  ShowMessage "Hola " + [nombre]
+  GoPage 2
+]
+```
+
+## Uso rápido
+
+1. Clona o descarga el repo
+2. Abre `index.html` en cualquier navegador moderno
+3. Sin instalación, sin dependencias externas (excepto Google Fonts)
+
+```bash
+git clone https://github.com/your-username/neobook-web.git
+cd neobook-web
+# Abre index.html en tu navegador
+```
+
+## Estructura del proyecto
+
+```
+neobook-web/
+├── index.html    # Estructura HTML principal
+├── style.css     # Estilos completos (dark theme)
+├── app.js        # Lógica, motor de comandos, drag & drop
 └── README.md
 ```
 
----
+## GitHub Pages
 
-## ▶️ Cómo ejecutar
+Este proyecto está diseñado para funcionar directo en GitHub Pages — sin build steps, sin Node.js.
 
-```bash
-# Instalar dependencias
-npm install
+Para activarlo:
+1. Ve a tu repo → **Settings → Pages**
+2. Source: **Deploy from a branch**
+3. Branch: `main` / `root`
+4. Guarda — tu app estará en `https://tu-usuario.github.io/neobook-web/`
 
-# Modo producción
-npm start
+## Roadmap
 
-# Modo desarrollo con hot-reload (Node 18+)
-npm run dev
-```
+- [ ] Guardar/cargar proyectos (localStorage)
+- [ ] Más comandos: `HTTPRequest`, `SaveFile`, `Timer`
+- [ ] Integración con Claude AI (`AskAI "pregunta"`)
+- [ ] Temas de color para el canvas
+- [ ] Multi-página real con navegación entre páginas
+- [ ] Exportar como app Electron
 
-El servidor arranca en `http://localhost:3000`
+## Contribuir
 
----
+Pull requests bienvenidos. Este es un proyecto comunitario para revivir una herramienta que mucha gente amó.
 
-## 🔌 Endpoints disponibles
+## Inspiración
 
-### Usuarios
+[NeoBook](https://en.wikipedia.org/wiki/NeoBook) fue creado por NeoSoft Corp. La empresa cerró y el software ya no existe. Este proyecto no tiene afiliación con NeoSoft Corp — es un homenaje open source.
 
-| Método | Ruta | Descripción | Fuente de datos |
-|--------|------|-------------|-----------------|
-| GET | `/api/usuarios` | Lista todos los usuarios | — |
-| GET | `/api/usuarios?rol=admin` | Filtra por rol | `req.query` |
-| GET | `/api/usuarios/:id` | Obtiene un usuario por ID | `req.params` |
-| POST | `/api/usuarios` | Crea un nuevo usuario | `req.body` |
-| PUT | `/api/usuarios/:id` | Actualiza un usuario | `req.params` + `req.body` |
-| DELETE | `/api/usuarios/:id` | Elimina un usuario | `req.params` |
+## Licencia
 
-### Productos
-
-| Método | Ruta | Descripción | Fuente de datos |
-|--------|------|-------------|-----------------|
-| GET | `/api/productos` | Lista todos | — |
-| GET | `/api/productos?precioMin=100&precioMax=500` | Filtro por precio | `req.query` |
-| GET | `/api/productos/:id` | Por ID | `req.params` |
-| GET | `/api/productos/categoria/:categoria` | Por categoría | `req.params` |
-| POST | `/api/productos` | Crea producto | `req.body` |
-| PUT | `/api/productos/:id` | Actualiza | `req.params` + `req.body` |
-| DELETE | `/api/productos/:id` | Elimina | `req.params` |
-
----
-
-## 📋 Ejemplos con curl
-
-### Obtener todos los usuarios
-```bash
-curl http://localhost:3000/api/usuarios
-```
-
-### Filtrar usuarios por rol (query param)
-```bash
-curl http://localhost:3000/api/usuarios?rol=admin
-```
-
-### Obtener usuario por ID (param de URL)
-```bash
-curl http://localhost:3000/api/usuarios/1
-```
-
-### Crear un usuario (datos en el body)
-```bash
-curl -X POST http://localhost:3000/api/usuarios \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Pedro Sánchez", "email": "pedro@ejemplo.com", "rol": "user"}'
-```
-
-### Actualizar un usuario (ID en URL + datos en body)
-```bash
-curl -X PUT http://localhost:3000/api/usuarios/1 \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Ana García Actualizada"}'
-```
-
-### Eliminar un usuario
-```bash
-curl -X DELETE http://localhost:3000/api/usuarios/2
-```
-
-### Obtener productos por categoría (param de texto en URL)
-```bash
-curl http://localhost:3000/api/productos/categoria/tecnologia
-```
-
-### Filtrar productos por precio (query params)
-```bash
-curl "http://localhost:3000/api/productos?precioMin=100&precioMax=400"
-```
-
-### Crear un producto
-```bash
-curl -X POST http://localhost:3000/api/productos \
-  -H "Content-Type: application/json" \
-  -d '{"nombre": "Monitor 4K", "precio": 800, "categoria": "tecnologia", "stock": 3}'
-```
-
----
-
-## 🧠 Conceptos clave explicados
-
-### req.params
-Variables definidas con `:` en la ruta. Siempre son strings.
-```
-Ruta:  /usuarios/:id
-URL:   /usuarios/42
-→     req.params.id === "42"
-```
-
-### req.query
-Parámetros opcionales después del `?` en la URL.
-```
-URL:  /usuarios?rol=admin&activo=true
-→    req.query.rol    === "admin"
-→    req.query.activo === "true"
-```
-
-### req.body
-Cuerpo de la petición. Requiere el middleware `express.json()`.
-```json
-POST /usuarios
-{ "nombre": "Ana", "email": "ana@test.com" }
-→ req.body.nombre === "Ana"
-```
-
-### Middlewares
-Funciones con firma `(req, res, next)` que se ejecutan entre la request y la response.
-`next()` pasa el control al siguiente middleware o ruta.
+MIT — úsalo como quieras.
