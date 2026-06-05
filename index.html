@@ -7,24 +7,32 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <div class="neo-app" id="neoapp">
 
   <!-- HEADER -->
   <div class="neo-header">
-    <div class="neo-logo">⬡ Neo<span>Book</span> <span class="neo-version">Web 1.0</span></div>
+    <div class="neo-logo">⬡ Neo<span>Book</span> <span class="neo-version">Web 2.0</span></div>
     <div class="neo-menu">
-      <div class="neo-menu-item" onclick="menuAction('new')">Archivo</div>
-      <div class="neo-menu-item" onclick="menuAction('edit')">Editar</div>
-      <div class="neo-menu-item" onclick="menuAction('page')">Páginas</div>
-      <div class="neo-menu-item" onclick="menuAction('obj')">Objetos</div>
-      <div class="neo-menu-item" onclick="showHelp()">Ayuda</div>
+      <div class="neo-menu-item" onclick="menuNew()">📄 Nuevo</div>
+      <div class="neo-menu-item" onclick="saveProject()">💾 Guardar</div>
+      <div class="neo-menu-item" onclick="loadProject()">📂 Cargar</div>
+      <div class="neo-menu-item" onclick="exportProject()">⬇ Exportar HTML</div>
+      <div class="neo-menu-item" onclick="showHelp()">❓ Ayuda</div>
     </div>
     <div class="header-right">
+      <div class="theme-switcher">
+        <span class="theme-label">Tema canvas:</span>
+        <select id="canvas-theme" onchange="applyCanvasTheme(this.value)" class="theme-select">
+          <option value="light">☀️ Claro</option>
+          <option value="dark">🌙 Oscuro</option>
+          <option value="paper">📄 Papel</option>
+          <option value="retro">👾 Retro</option>
+          <option value="soft">🌸 Suave</option>
+        </select>
+      </div>
       <div class="page-counter">
         <div class="page-btn" onclick="changePage(-1)">‹</div>
         <span>Pág <span id="cur-page">1</span> / <span id="tot-pages">3</span></span>
@@ -36,78 +44,73 @@
 
   <!-- TOOLBAR -->
   <div class="neo-toolbar">
-    <button class="tool-btn active" id="tool-select" onclick="setTool('select')"><i class="ti ti-cursor-text" aria-hidden="true"></i> Seleccionar</button>
-    <button class="tool-btn" id="tool-label" onclick="setTool('label')"><i class="ti ti-typography" aria-hidden="true"></i> Texto</button>
-    <button class="tool-btn" id="tool-button" onclick="setTool('button')"><i class="ti ti-square" aria-hidden="true"></i> Botón</button>
-    <button class="tool-btn" id="tool-input" onclick="setTool('input')"><i class="ti ti-forms" aria-hidden="true"></i> Campo</button>
-    <button class="tool-btn" id="tool-image" onclick="setTool('image')"><i class="ti ti-photo" aria-hidden="true"></i> Imagen</button>
-    <button class="tool-btn" id="tool-rect" onclick="setTool('rect')"><i class="ti ti-rectangle" aria-hidden="true"></i> Rect</button>
+    <button class="tool-btn active" id="tool-select" onclick="setTool('select')">↖ Select</button>
     <div class="tool-sep"></div>
-    <button class="tool-btn" onclick="deleteSelected()"><i class="ti ti-trash" aria-hidden="true"></i> Borrar</button>
-    <button class="tool-btn" onclick="duplicateSelected()"><i class="ti ti-copy" aria-hidden="true"></i> Duplicar</button>
-    <button class="tool-btn" onclick="clearCanvas()"><i class="ti ti-x" aria-hidden="true"></i> Limpiar</button>
+    <span class="toolbar-group-label">Controles</span>
+    <button class="tool-btn" id="tool-label"    onclick="setTool('label')">T Texto</button>
+    <button class="tool-btn" id="tool-button"   onclick="setTool('button')">⬜ Botón</button>
+    <button class="tool-btn" id="tool-input"    onclick="setTool('input')">▭ Campo</button>
+    <button class="tool-btn" id="tool-checkbox" onclick="setTool('checkbox')">☑ Check</button>
+    <button class="tool-btn" id="tool-select2"  onclick="setTool('select')">▾ Lista</button>
+    <button class="tool-btn" id="tool-textarea" onclick="setTool('textarea')">≡ Área</button>
+    <button class="tool-btn" id="tool-progress" onclick="setTool('progress')">▬ Progreso</button>
+    <button class="tool-btn" id="tool-slider"   onclick="setTool('slider')">◎ Slider</button>
     <div class="tool-sep"></div>
-    <button class="tool-btn" onclick="exportProject()"><i class="ti ti-download" aria-hidden="true"></i> Exportar HTML</button>
+    <span class="toolbar-group-label">Gráficos</span>
+    <button class="tool-btn" id="tool-rect"   onclick="setTool('rect')">▪ Rect</button>
+    <button class="tool-btn" id="tool-circle" onclick="setTool('circle')">● Círculo</button>
+    <button class="tool-btn" id="tool-card"   onclick="setTool('card')">🃏 Card</button>
+    <button class="tool-btn" id="tool-badge"  onclick="setTool('badge')">🏷 Badge</button>
+    <button class="tool-btn" id="tool-hline"  onclick="setTool('hline')">— Línea</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn danger" onclick="deleteSelected()">🗑 Borrar</button>
+    <button class="tool-btn" onclick="duplicateSelected()">⧉ Duplicar</button>
+    <button class="tool-btn" onclick="bringForward()">▲ Frente</button>
+    <button class="tool-btn" onclick="sendBackward()">▼ Atrás</button>
   </div>
 
   <!-- MAIN -->
   <div class="neo-main">
 
-    <!-- LEFT: PALETTE -->
+    <!-- LEFT PALETTE -->
     <div class="neo-palette">
       <div class="palette-section">
         <div class="palette-title">Controles</div>
         <div class="palette-items">
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'button')" ondblclick="addFromPalette('button')">
-            <span class="pi"><i class="ti ti-square" aria-hidden="true"></i></span>Botón
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'input')" ondblclick="addFromPalette('input')">
-            <span class="pi"><i class="ti ti-forms" aria-hidden="true"></i></span>Campo
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'label')" ondblclick="addFromPalette('label')">
-            <span class="pi"><i class="ti ti-typography" aria-hidden="true"></i></span>Etiqueta
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'checkbox')" ondblclick="addFromPalette('checkbox')">
-            <span class="pi"><i class="ti ti-checkbox" aria-hidden="true"></i></span>Checkbox
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'select')" ondblclick="addFromPalette('select')">
-            <span class="pi"><i class="ti ti-selector" aria-hidden="true"></i></span>Lista
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'textarea')" ondblclick="addFromPalette('textarea')">
-            <span class="pi"><i class="ti ti-align-left" aria-hidden="true"></i></span>Área
-          </div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'button')"   ondblclick="addFromPalette('button')"><span class="pi">⬜</span>Botón</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'input')"    ondblclick="addFromPalette('input')"><span class="pi">▭</span>Campo</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'label')"    ondblclick="addFromPalette('label')"><span class="pi">T</span>Texto</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'checkbox')" ondblclick="addFromPalette('checkbox')"><span class="pi">☑</span>Check</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'select')"   ondblclick="addFromPalette('select')"><span class="pi">▾</span>Lista</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'textarea')" ondblclick="addFromPalette('textarea')"><span class="pi">≡</span>Área</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'progress')" ondblclick="addFromPalette('progress')"><span class="pi">▬</span>Progreso</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'slider')"   ondblclick="addFromPalette('slider')"><span class="pi">◎</span>Slider</div>
         </div>
       </div>
-
       <div class="palette-section">
         <div class="palette-title">Gráficos</div>
         <div class="palette-items">
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'rect')" ondblclick="addFromPalette('rect')">
-            <span class="pi"><i class="ti ti-rectangle" aria-hidden="true"></i></span>Rect
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'circle')" ondblclick="addFromPalette('circle')">
-            <span class="pi"><i class="ti ti-circle" aria-hidden="true"></i></span>Círculo
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'hline')" ondblclick="addFromPalette('hline')">
-            <span class="pi"><i class="ti ti-minus" aria-hidden="true"></i></span>Línea
-          </div>
-          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'image')" ondblclick="addFromPalette('image')">
-            <span class="pi"><i class="ti ti-photo" aria-hidden="true"></i></span>Imagen
-          </div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'rect')"   ondblclick="addFromPalette('rect')"><span class="pi">▪</span>Rect</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'circle')" ondblclick="addFromPalette('circle')"><span class="pi">●</span>Círculo</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'card')"   ondblclick="addFromPalette('card')"><span class="pi">🃏</span>Card</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'badge')"  ondblclick="addFromPalette('badge')"><span class="pi">🏷</span>Badge</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'hline')"  ondblclick="addFromPalette('hline')"><span class="pi">—</span>Línea</div>
+          <div class="palette-item" draggable="true" ondragstart="paletteDrag(event,'image')"  ondblclick="addFromPalette('image')"><span class="pi">🖼</span>Imagen</div>
         </div>
       </div>
-
       <div class="palette-section">
-        <div class="palette-title">Comandos rápidos</div>
+        <div class="palette-title">Comandos</div>
         <div class="quick-cmds">
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('GoPage')"><span class="cmd-name">GoPage</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('ShowMessage')"><span class="cmd-name">ShowMessage</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('SetVariable')"><span class="cmd-name">SetVariable</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('IfThen')"><span class="cmd-name">IfThen</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('PlaySound')"><span class="cmd-name">PlaySound</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('GetInput')"><span class="cmd-name">GetInput</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('Loop')"><span class="cmd-name">Loop</span></div>
-          <div class="palette-item palette-cmd" ondblclick="insertCmd('Print')"><span class="cmd-name">Print</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('GoPage 1')"><span class="cmd-name">GoPage</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('ShowMessage &quot;Hola&quot;')"><span class="cmd-name">ShowMessage</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('SetVariable x = &quot;1&quot;')"><span class="cmd-name">SetVariable</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('SetText btn_1 = &quot;Nuevo texto&quot;')"><span class="cmd-name">SetText</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('ChangeColor btn_1 bg=#ff0000')"><span class="cmd-name">ChangeColor</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('Timer 3000 [&#10;  ShowMessage &quot;Tiempo!&quot;&#10;]')"><span class="cmd-name">Timer</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('HTTPRequest url=&quot;https://api.example.com&quot; var=resp')"><span class="cmd-name">HTTPRequest</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('IfThen [x] = &quot;1&quot; [&#10;  Print si&#10;]')"><span class="cmd-name">IfThen</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('Loop 5 [&#10;  Print iterando&#10;]')"><span class="cmd-name">Loop</span></div>
+          <div class="palette-item palette-cmd" ondblclick="insertCmd('GetInput prompt=&quot;?&quot; var=x')"><span class="cmd-name">GetInput</span></div>
         </div>
       </div>
     </div>
@@ -115,13 +118,11 @@
     <!-- CENTER -->
     <div class="neo-center">
       <div class="neo-tabs">
-        <div class="neo-tab active" id="tab-design" onclick="switchTab('design')">Diseño</div>
-        <div class="neo-tab" id="tab-script" onclick="switchTab('script')">Script</div>
-        <div class="neo-tab" id="tab-vars" onclick="switchTab('vars')">Variables</div>
+        <div class="neo-tab active" id="tab-design" onclick="switchTab('design')">🎨 Diseño</div>
+        <div class="neo-tab" id="tab-script" onclick="switchTab('script')">📝 Script</div>
+        <div class="neo-tab" id="tab-vars"   onclick="switchTab('vars')">📊 Variables</div>
         <div class="tab-spacer"></div>
-        <div class="selected-info-wrap">
-          <span id="selected-info">Nada seleccionado</span>
-        </div>
+        <div class="selected-info-wrap"><span id="selected-info">Nada seleccionado</span></div>
       </div>
 
       <!-- DESIGN VIEW -->
@@ -131,7 +132,6 @@
           ondrop="canvasDrop(event)">
           <div id="page-canvas" onclick="canvasClick(event)"></div>
         </div>
-
         <!-- PREVIEW OVERLAY -->
         <div class="preview-overlay" id="preview-overlay">
           <div class="preview-window">
@@ -139,13 +139,11 @@
               <div class="preview-dot" style="background:#ff5f57"></div>
               <div class="preview-dot" style="background:#febc2e"></div>
               <div class="preview-dot" style="background:#28c840"></div>
-              <div class="preview-title" id="preview-title">Mi Aplicación — Vista Previa</div>
+              <div class="preview-title">Vista Previa — Mi App NeoBook</div>
             </div>
-            <div class="preview-body">
-              <div id="preview-canvas"></div>
-            </div>
+            <div class="preview-body"><div id="preview-canvas"></div></div>
           </div>
-          <button class="preview-close" onclick="closePreview()" aria-label="Cerrar preview">✕</button>
+          <button class="preview-close" onclick="closePreview()">✕</button>
         </div>
       </div>
 
@@ -154,24 +152,31 @@
         <div class="script-toolbar">
           <span class="script-toolbar-label">Insertar:</span>
           <div class="cmd-chip" onclick="insertToScript('GoPage 1')">GoPage</div>
-          <div class="cmd-chip" onclick="insertToScript('ShowMessage &quot;Hola!&quot;')">ShowMessage</div>
+          <div class="cmd-chip" onclick="insertToScript('ShowMessage &quot;Hola&quot;')">ShowMessage</div>
           <div class="cmd-chip" onclick="insertToScript('SetVariable nombre = &quot;valor&quot;')">SetVariable</div>
-          <div class="cmd-chip" onclick="insertToScript('IfThen [var] = &quot;&quot; [\n  ShowMessage &quot;Vacío&quot;\n]')">IfThen</div>
-          <div class="cmd-chip" onclick="insertToScript('PlaySound beep')">PlaySound</div>
-          <div class="cmd-chip" onclick="insertToScript('GetInput prompt = &quot;¿Tu nombre?&quot; var = nombre')">GetInput</div>
-          <div class="cmd-chip" onclick="insertToScript('Loop 5 [\n  Print iterando\n]')">Loop</div>
+          <div class="cmd-chip" onclick="insertToScript('SetText obj_1 = &quot;Nuevo texto&quot;')">SetText</div>
+          <div class="cmd-chip" onclick="insertToScript('ChangeColor obj_1 bg=#4f46e5')">ChangeColor</div>
+          <div class="cmd-chip" onclick="insertToScript('Timer 2000 [\n  ShowMessage &quot;Listo!&quot;\n]')">Timer</div>
+          <div class="cmd-chip" onclick="insertToScript('HTTPRequest url=&quot;https://jsonplaceholder.typicode.com/todos/1&quot; var=resp')">HTTPRequest</div>
+          <div class="cmd-chip" onclick="insertToScript('IfThen [x] = &quot;1&quot; [\n  Print si\n]')">IfThen</div>
+          <div class="cmd-chip" onclick="insertToScript('Loop 3 [\n  Print iterando\n]')">Loop</div>
           <div class="cmd-chip" onclick="insertToScript('Print [nombre]')">Print</div>
         </div>
-        <textarea class="script-editor" id="script-editor" placeholder="// NeoBook Web Script&#10;// Ejemplo:&#10;//&#10;// OnPageLoad [&#10;//   SetVariable titulo = &quot;Mi App&quot;&#10;//   ShowMessage &quot;Bienvenido a &quot; + [titulo]&#10;// ]&#10;//&#10;// OnButtonClick btn_1 [&#10;//   GetInput prompt = &quot;Tu nombre?&quot; var = nombre&#10;//   ShowMessage &quot;Hola &quot; + [nombre]&#10;// ]
+        <textarea class="script-editor" id="script-editor" placeholder="// NeoBook Web Script v2.0
+// Ejemplo:
+// OnPageLoad [
+//   SetVariable titulo = &quot;Mi App&quot;
+//   ShowMessage &quot;Bienvenido a &quot; + [titulo]
+// ]
 
 OnPageLoad [
-  SetVariable saludo = &quot;¡Bienvenido a NeoBook Web!&quot;
+  SetVariable saludo = &quot;¡Bienvenido a NeoBook Web 2.0!&quot;
   Print [saludo]
 ]"></textarea>
       </div>
 
       <!-- VARS VIEW -->
-      <div id="vars-view" style="display:none;flex:1;overflow:auto;padding:16px">
+      <div id="vars-view" style="display:none;flex:1;overflow:auto;padding:16px;font-family:monospace">
         <div class="vars-header">
           <span class="vars-title">Variables del programa</span>
           <button class="tool-btn" onclick="addVar()">+ Nueva</button>
@@ -182,15 +187,22 @@ OnPageLoad [
 
     <!-- RIGHT: PROPERTIES -->
     <div class="neo-right">
-      <div class="right-panel-header">Propiedades</div>
-      <div class="props-container" id="props-container">
-        <div class="props-empty">Selecciona un<br>objeto en el canvas<br>para editar sus<br>propiedades</div>
+      <div class="right-panel-tabs">
+        <div class="rpanel-tab active" id="rtab-props"   onclick="switchRPanel('props')">Props</div>
+        <div class="rpanel-tab"        id="rtab-style"   onclick="switchRPanel('style')">Estilo</div>
+        <div class="rpanel-tab"        id="rtab-events"  onclick="switchRPanel('events')">Eventos</div>
       </div>
-      <div class="events-panel">
-        <div class="right-panel-header">Eventos</div>
-        <div class="props-container" id="events-container" style="max-height:160px">
-          <div class="props-empty">—</div>
-        </div>
+      <!-- PROPS -->
+      <div class="props-container" id="rpanel-props">
+        <div class="props-empty">Selecciona un<br>objeto en el canvas</div>
+      </div>
+      <!-- STYLE -->
+      <div class="props-container" id="rpanel-style" style="display:none">
+        <div class="props-empty">Selecciona un<br>objeto para estilizarlo</div>
+      </div>
+      <!-- EVENTS -->
+      <div class="props-container" id="rpanel-events" style="display:none">
+        <div class="props-empty">—</div>
       </div>
     </div>
 
@@ -207,26 +219,27 @@ OnPageLoad [
     <div class="console-input-row">
       <span class="console-prompt">&gt;</span>
       <input class="console-cmd-input" id="cmd-input"
-        placeholder="Escribe un comando NeoBook... (ej: ShowMessage &quot;Hola&quot;)"
+        placeholder="Escribe un comando... (ej: ShowMessage &quot;Hola&quot; | Help)"
         onkeydown="cmdKeyDown(event)">
       <button class="console-exec-btn" onclick="execCmd()">Exec</button>
     </div>
   </div>
 
-  <!-- STATUS BAR -->
+  <!-- STATUS -->
   <div class="status-bar">
     <div class="status-dot"></div>
     <span class="status-ok">Listo</span>
     <span class="status-sep">|</span>
     <span id="obj-count">0 objetos</span>
     <span class="status-sep">|</span>
-    <span id="canvas-info">Canvas: 600×420</span>
+    <span id="canvas-info">Canvas: 700×480</span>
+    <span class="status-sep">|</span>
+    <span id="project-name-status">Sin título</span>
     <span class="status-spacer"></span>
-    <span>NeoBook Web v1.0 — Open Source Revival</span>
+    <span>NeoBook Web v2.0</span>
   </div>
 
-</div><!-- end neo-app -->
-
+</div>
 <script src="app.js"></script>
 </body>
 </html>
